@@ -1,0 +1,1 @@
+This project explores the massive wave of layoffs in the tech industry over the past three years using real-world data from [Layoffs.fyi](https://layoffs.fyi). The goal is to uncover patterns in layoffs across companies, sectors, and regions, and compare them with hiring recoveries through job posting data.
