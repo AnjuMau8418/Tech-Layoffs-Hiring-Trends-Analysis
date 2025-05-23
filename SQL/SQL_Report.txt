@@ -1,0 +1,180 @@
+The SQL analysis uses structured queries on a relational database to uncover patterns, trends, and sectoral impacts.
+
+## 📊 Dataset Overview
+
+**Key Columns:**
+
+* `company`: Name of the company
+* `industry`: Industry sector
+* `location`, `country`: Geographical location
+* `date`: Date of the layoff
+* `total_laid_off`: Number of employees laid off
+* `percentage_laid_off`: Percent of workforce laid off
+* `stage`: Funding or company stage (e.g., Seed, Series A)
+* `funding`: Funding type/category
+* `severity`: Qualitative impact rating
+
+---
+
+## 🔢 SQL Queries and Findings
+
+### 1. Total Records in Dataset
+
+```sql
+SELECT COUNT(*) AS total_rows FROM Layoffs_Dataset;
+```
+
+**Insight:** Total number of reported layoffs entries.
+
+---
+
+### 2. Sample Records (Top 5 Rows)
+
+```sql
+SELECT * FROM Layoffs_Dataset LIMIT 5;
+```
+
+**Insight:** Quick glance at the structure and values in the dataset.
+
+---
+
+### 3. Total Layoffs Across All Companies
+
+```sql
+SELECT SUM(total_laid_off) AS total_layoffs FROM Layoffs_Dataset;
+```
+
+**Insight:** Overall job loss in the tech sector during the period.
+
+---
+
+### 4. Year-Wise Layoff Summary
+
+```sql
+SELECT EXTRACT(YEAR FROM date) AS year, SUM(total_laid_off) AS layoffs
+FROM Layoffs_Dataset
+GROUP BY year
+ORDER BY year;
+```
+
+**Insight:** Layoffs increased drastically in 2023, with slight recovery signs in 2024.
+
+---
+
+### 5. Layoffs by Industry
+
+```sql
+SELECT industry, SUM(total_laid_off) AS layoffs
+FROM Layoffs_Dataset
+GROUP BY industry
+ORDER BY layoffs DESC;
+```
+
+**Insight:** Fintech and e-commerce were the most impacted sectors.
+
+---
+
+### 6. Top 10 Companies with the Most Layoffs
+
+```sql
+SELECT company, SUM(total_laid_off) AS layoffs
+FROM Layoffs_Dataset
+GROUP BY company
+ORDER BY layoffs DESC
+LIMIT 10;
+```
+
+**Insight:** Major tech giants accounted for a significant portion of layoffs.
+
+---
+
+### 7. Country-Wise Layoffs
+
+```sql
+SELECT country, SUM(total_laid_off) AS layoffs
+FROM Layoffs_Dataset
+GROUP BY country
+ORDER BY layoffs DESC
+LIMIT 10;
+```
+
+**Insight:** United States leads with the highest number of layoffs.
+
+---
+
+### 8. Monthly Layoffs Trend
+
+```sql
+SELECT TO_CHAR(date, 'YYYY-MM') AS month_year, SUM(total_laid_off) AS layoffs
+FROM Layoffs_Dataset
+GROUP BY month_year
+ORDER BY month_year;
+```
+
+**Insight:** Peak layoffs occurred in Q1 2023.
+
+---
+
+### 9. Layoff Severity Distribution
+
+```sql
+SELECT severity, COUNT(*) AS occurrences
+FROM Layoffs_Dataset
+GROUP BY severity
+ORDER BY occurrences DESC;
+```
+
+**Insight:** Most layoffs were categorized as high severity.
+
+---
+
+### 10. Layoffs by Funding Category
+
+```sql
+SELECT funding, SUM(total_laid_off) AS layoffs
+FROM Layoffs_Dataset
+GROUP BY funding
+ORDER BY layoffs DESC;
+```
+
+**Insight:** Companies in late funding stages were more prone to layoffs.
+
+---
+
+### 11. Layoffs by Company Stage
+
+```sql
+SELECT stage, SUM(total_laid_off) AS layoffs
+FROM Layoffs_Dataset
+GROUP BY stage
+ORDER BY layoffs DESC;
+```
+
+**Insight:** Series C and beyond witnessed the largest cuts.
+
+---
+
+### 12. Year-on-Year Percentage Change in Layoffs
+
+```sql
+WITH yearly_layoffs AS (
+  SELECT EXTRACT(YEAR FROM date) AS year, SUM(total_laid_off) AS total
+  FROM Layoffs_Dataset
+  GROUP BY year
+)
+SELECT year, total,
+       ROUND(((total - LAG(total) OVER (ORDER BY year)) / LAG(total) OVER (ORDER BY year)) * 100, 2) AS percent_change
+FROM yearly_layoffs;
+```
+
+**Insight:** Layoffs increased by over 150% from 2022 to 2023, highlighting a major industry contraction.
+
+---
+
+## 📍 Conclusion
+
+The SQL analysis provided valuable insights into the scale and scope of tech layoffs from 2020 - 2025. This SQL module is crucial in supporting the data storytelling across other stages of the project.
+
+---
+
+
